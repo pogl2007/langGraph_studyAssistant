@@ -1,0 +1,37 @@
+[project]
+name = "study-assistant"
+version = "0.1.0"
+description = "Ассистент по учебным материалам: RAG поверх лекций с цитатами на файл и страницу"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic-settings>=2.4",
+    "qdrant-client>=1.15",
+    "sentence-transformers>=3.0",
+    "pymupdf>=1.24",
+    "openai>=1.40",
+    "streamlit>=1.40",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "slow: тянет настоящие модели с Hugging Face",
+]
+filterwarnings = [
+    # тесты гоняют Qdrant в памяти, там индексы payload не нужны
+    "ignore:Payload indexes have no effect in the local Qdrant",
+]

@@ -1,0 +1,3 @@
+# Код уезжает в Linux-контейнеры — везде LF, независимо от core.autocrlf на машине
+* text=auto eol=lf
+*.pdf binary
