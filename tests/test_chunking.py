@@ -1,7 +1,7 @@
 import pytest
 
-from app.ingest.chunking import chunk_pages
-from app.ingest.parsers import ParsedPage, clean_text, parse_pdf
+from app.ingest.chunking import chunk_pages, chunk_structured
+from app.ingest.parsers import Block, ParsedPage, clean_text, parse_pdf
 
 from .conftest import FakeEmbedder, make_pdf
 
@@ -71,3 +71,38 @@ def test_subword_tokens_are_snapped_to_word_boundaries():
     for c in chunks:
         for w in c.text.split():
             assert w in text.split()
+
+
+def test_structured_parser_detects_headings_and_drops_formula_debris():
+    data = make_pdf(["# Закон Кулона\nСила обратно пропорциональна квадрату расстояния.\nk 9 10 9\n# Точечный заряд\nТело малых размеров."])
+    [page] = parse_pdf(data)
+    headings = [b.text for b in page.blocks if b.is_heading]
+    assert headings == ["Закон Кулона", "Точечный заряд"]
+    assert "k 9 10 9" not in page.text  # обрывок формулы
+
+
+def test_structured_chunks_follow_sections_and_carry_title_to_next_page():
+    pages = [
+        ParsedPage(1, "", (Block("Закон Кулона", True), Block(words(20)))),
+        ParsedPage(2, "", (Block(words(20, start=100)),)),  # продолжение раздела без заголовка
+        ParsedPage(3, "", (Block("Теорема Гаусса", True), Block(words(20, start=200)))),
+    ]
+    chunks = chunk_structured(pages, spans, chunk_tokens=30, overlap=5, min_tokens=3)
+    assert [(c.page, c.section) for c in chunks] == [(1, "Закон Кулона"), (2, "Закон Кулона"), (3, "Теорема Гаусса")]
+    assert chunks[0].embed_text.startswith("Закон Кулона\n")
+
+
+def test_small_sections_are_merged_on_the_same_page():
+    pages = [ParsedPage(1, "", (Block("A", True), Block("коротко"), Block("B", True), Block(words(30))))]
+    chunks = chunk_structured(pages, spans, chunk_tokens=50, overlap=5, min_tokens=5)
+    assert len(chunks) == 1
+    assert chunks[0].section == "A; B"
+
+
+def test_large_section_is_split_recursively_with_overlap():
+    text = "\n\n".join(" ".join(f"п{p}с{i}." for i in range(20)) for p in range(4))
+    pages = [ParsedPage(1, "", (Block("Большой раздел", True), Block(text)))]
+    chunks = chunk_structured(pages, spans, chunk_tokens=30, overlap=8, min_tokens=3)
+    assert len(chunks) > 2
+    assert all(len(c.text.split()) <= 30 for c in chunks)
+    assert all(c.section == "Большой раздел" for c in chunks)
