@@ -13,7 +13,7 @@ services:
       timeout: 5s
       retries: 12
 
-  ui:
+  api:
     build: .
     restart: unless-stopped
     env_file:
@@ -21,22 +21,55 @@ services:
         required: false
     environment:
       QDRANT_URL: http://qdrant:6333
+      PUBLIC_API_URL: http://localhost:8000
+      CORS_ORIGINS: http://localhost:8501
     ports:
-      - "8501:8501"
+      - "8000:8000"
     volumes:
-      - hf_models:/models
-      - app_data:/srv/data
+      - hf_models:/models  # эмбеддинги, BM25 и реранкер (~5 ГБ) скачиваются один раз
+      - app_data:/srv/data  # оригиналы PDF, память агента (SQLite), обратная связь
     depends_on:
       qdrant:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      # при первом запуске модели скачиваются несколько минут
+      start_period: 600s
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    restart: unless-stopped
+    environment:
+      STUDY_API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health', timeout=3)"]
       interval: 15s
       timeout: 5s
       retries: 5
-      start_period: 30s
+
+  # Локальная LLM вместо внешнего API: docker compose --profile ollama up -d,
+  # затем в .env: LLM_BASE_URL=http://ollama:11434/v1 и LLM_MODEL=qwen2.5:7b (модель: docker compose exec ollama ollama pull qwen2.5:7b)
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
 
 volumes:
   qdrant_data:
   hf_models:
   app_data:
+  ollama_models:

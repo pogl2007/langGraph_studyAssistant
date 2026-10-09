@@ -19,12 +19,11 @@ RUN python -c "import tomllib; print('\n'.join(tomllib.load(open('pyproject.toml
     && pip install -r /tmp/requirements.txt
 
 COPY app ./app
-COPY ui ./ui
 
 RUN useradd --create-home --uid 1000 app \
     && mkdir -p /models /srv/data \
     && chown -R app /models /srv/data
 USER app
 
-EXPOSE 8501
-CMD ["streamlit", "run", "ui/streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.gatherUsageStats=false"]
+EXPOSE 8000
+CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
