@@ -64,7 +64,7 @@ def test_document_tags_cannot_be_closed_from_inside():
 async def test_pipeline_answers_with_citation(indexer, embedder, store):
     indexer.index_pdf("lec.pdf", make_pdf(["Вступление", "Регуляризация L2 штрафует большие веса."]), course="ml")
     llm = FakeLLM("L2 добавляет штраф за большие веса [1].")
-    pipeline = RagPipeline(Retriever(embedder, store), llm, top_k=2)
+    pipeline = RagPipeline(Retriever(embedder, store, mode="dense"), llm, top_k=2)
 
     answer = await pipeline.answer("что такое регуляризация L2", course="ml")
 
@@ -78,7 +78,7 @@ async def test_pipeline_answers_with_citation(indexer, embedder, store):
 
 async def test_pipeline_passes_through_refusal(indexer, embedder, store):
     indexer.index_pdf("lec.pdf", make_pdf(["Регуляризация L2 штрафует большие веса."]), course="ml")
-    pipeline = RagPipeline(Retriever(embedder, store), FakeLLM(NO_ANSWER), top_k=2)
+    pipeline = RagPipeline(Retriever(embedder, store, mode="dense"), FakeLLM(NO_ANSWER), top_k=2)
 
     answer = await pipeline.answer("кто выиграл чемпионат мира", course="ml")
 
@@ -89,7 +89,7 @@ async def test_pipeline_passes_through_refusal(indexer, embedder, store):
 async def test_low_score_refuses_without_calling_llm(indexer, embedder, store):
     indexer.index_pdf("lec.pdf", make_pdf(["Регуляризация L2 штрафует большие веса."]), course="ml")
     llm = FakeLLM("не должен вызываться")
-    pipeline = RagPipeline(Retriever(embedder, store), llm, top_k=2, min_score=0.99)
+    pipeline = RagPipeline(Retriever(embedder, store, mode="dense"), llm, top_k=2, min_score=0.99)
 
     answer = await pipeline.answer("рецепт борща", course="ml")
 

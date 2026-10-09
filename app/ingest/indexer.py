@@ -1,4 +1,4 @@
-"""Индексация файла: парсинг → чанки → эмбеддинги → Qdrant.
+"""Индексация файла: парсинг → чанки → dense + sparse векторы → Qdrant.
 
 Всё здесь синхронное и CPU-bound. Из асинхронного кода вызывать через asyncio.to_thread,
 иначе парсинг и эмбеддинги заблокируют event loop.
@@ -12,9 +12,10 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
-from app.ingest.chunking import chunk_pages
+from app.ingest.chunking import chunk_pages, chunk_structured
 from app.ingest.parsers import parse_pdf
 from app.retrieval.embeddings import Embedder
+from app.retrieval.sparse import SparseEncoder
 from app.retrieval.store import ChunkStore, StoredChunk, point_id
 
 log = logging.getLogger(__name__)
@@ -30,6 +31,7 @@ class IndexResult:
     pages: int
     chunks: int
     seconds: float
+    status: str = "indexed"  # indexed | unchanged
 
 
 def safe_filename(name: str) -> str:
@@ -48,24 +50,52 @@ def make_file_id(course: str, filename: str) -> str:
 
 
 class Indexer:
-    def __init__(self, embedder: Embedder, store: ChunkStore, chunk_tokens: int, chunk_overlap: int):
+    def __init__(
+        self,
+        embedder: Embedder,
+        store: ChunkStore,
+        chunk_tokens: int,
+        chunk_overlap: int,
+        sparse: SparseEncoder | None = None,
+        chunking: str = "structured",
+        chunk_min_tokens: int = 60,
+        files_dir: Path | None = None,
+    ):
         self.embedder = embedder
         self.store = store
+        self.sparse = sparse
         self.chunk_tokens = chunk_tokens
         self.chunk_overlap = chunk_overlap
+        self.chunk_min_tokens = chunk_min_tokens
+        self.chunking = chunking
+        self.files_dir = files_dir
 
-    def index_pdf(self, filename: str, data: bytes, course: str = "default") -> IndexResult:
+    def index_pdf(self, filename: str, data: bytes, course: str = "default", force: bool = False) -> IndexResult:
         started = time.perf_counter()
         filename = safe_filename(filename)
         file_id = make_file_id(course, filename)
+        file_hash = hashlib.sha256(data).hexdigest()
+
+        existing = self.store.get_file(file_id) if self.store.exists() else None
+        if existing and existing.get("file_hash") == file_hash and not force:
+            # Тот же файл загрузили ещё раз — ни парсинга, ни эмбеддингов.
+            log.info("пропущен %s: содержимое не изменилось", filename)
+            return IndexResult(file_id, filename, existing["pages_total"], existing["chunks_total"],
+                               time.perf_counter() - started, status="unchanged")
 
         pages = parse_pdf(data)
-        chunks = chunk_pages(pages, self.embedder.token_spans, self.chunk_tokens, self.chunk_overlap)
+        if self.chunking == "structured":
+            chunks = chunk_structured(
+                pages, self.embedder.token_spans, self.chunk_tokens, self.chunk_overlap, self.chunk_min_tokens
+            )
+        else:
+            chunks = chunk_pages(pages, self.embedder.token_spans, self.chunk_tokens, self.chunk_overlap)
+
         file_meta = {
             "file_id": file_id,
             "filename": filename,
             "course": course,
-            "file_hash": hashlib.sha256(data).hexdigest(),
+            "file_hash": file_hash,
             "pages_total": len(pages),
             "chunks_total": len(chunks),
         }
@@ -83,15 +113,27 @@ class Indexer:
             )
             for c in chunks
         ]
-        vectors = self.embedder.embed_documents([c.text for c in stored]) if stored else []
+        embed_texts = [c.embed_text for c in chunks]
+        dense = self.embedder.embed_documents(embed_texts) if chunks else []
+        sparse = self.sparse.embed_documents(embed_texts) if self.sparse and chunks else None
 
         self.store.ensure_collection(self.embedder.dim)
         # id точек детерминированы, поэтому upsert перезаписывает старую версию файла на месте,
         # а потом удаляем хвост, если новая версия короче. Окна «файл пропал из поиска» нет.
         if stored:
-            self.store.upsert(stored, vectors)
+            self.store.upsert(stored, dense, sparse)
         self.store.delete_file(file_id, from_chunk_index=len(stored))
+
+        if self.files_dir:  # оригинал нужен, чтобы цитата открывала PDF на нужной странице
+            self.files_dir.mkdir(parents=True, exist_ok=True)
+            (self.files_dir / f"{file_id}.pdf").write_bytes(data)
 
         result = IndexResult(file_id, filename, len(pages), len(chunks), time.perf_counter() - started)
         log.info("индексирован %s: %d стр., %d чанков, %.1f с", filename, result.pages, result.chunks, result.seconds)
         return result
+
+    def delete(self, file_id: str) -> None:
+        if self.store.exists():
+            self.store.delete_file(file_id)
+        if self.files_dir:
+            (self.files_dir / f"{file_id}.pdf").unlink(missing_ok=True)
