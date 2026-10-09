@@ -36,8 +36,16 @@ def format_documents(chunks: Sequence[ScoredChunk]) -> str:
     return "<documents>\n" + "\n".join(parts) + "\n</documents>"
 
 
-def answer_messages(question: str, chunks: Sequence[ScoredChunk]) -> list[dict[str, str]]:
+def answer_messages(
+    question: str, chunks: Sequence[ScoredChunk], history: str = "", search_query: str | None = None
+) -> list[dict[str, str]]:
+    parts = [format_documents(chunks)]
+    if history:
+        parts.append(f"Контекст диалога (для понимания вопроса, не источник фактов):\n{history}")
+    parts.append(f"Вопрос: {question}")
+    if search_query and search_query.strip().lower() != question.strip().lower():
+        parts.append(f"Тот же вопрос без отсылок к диалогу: {search_query}")
     return [
         {"role": "system", "content": ANSWER_SYSTEM},
-        {"role": "user", "content": f"{format_documents(chunks)}\n\nВопрос: {question}"},
+        {"role": "user", "content": "\n\n".join(parts)},
     ]
