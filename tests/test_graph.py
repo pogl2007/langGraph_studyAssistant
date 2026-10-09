@@ -276,3 +276,10 @@ async def test_graph_renders_to_mermaid(make_graph):
     mermaid = make_graph(ScriptedLLM()).get_graph().draw_mermaid()
     for node in ("route", "retrieve", "grade", "rewrite", "generate", "no_answer", "make_quiz", "ask_quiz"):
         assert node in mermaid
+
+
+async def test_no_answer_hides_unrelated_nearest_topics(make_graph):
+    llm = ScriptedLLM(rewrite="борщ свекла")
+    _, state, _ = await run(make_graph(llm, max_rewrites=1, nearest_min_relevance=0.5), "Какой рецепт у борща?")
+    assert state["answer"] == NO_ANSWER
+    assert state["citations"] == []

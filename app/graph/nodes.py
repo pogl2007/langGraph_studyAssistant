@@ -243,6 +243,9 @@ class AgentNodes:
     async def no_answer(self, state: AgentState, runtime: Runtime[AgentContext]) -> dict:
         _status(runtime, "no_answer", "В материалах ответа нет")
         docs = sorted(_docs(state), key=lambda d: d.relevance, reverse=True)
+        if self.retriever.reranker is not None:
+            # «стих про кота» → «Понятие заряда» с реранком 0,0002 — не «ближайшая тема», а шум
+            docs = [d for d in docs if d.relevance >= self.s.nearest_min_relevance]
         nearest, seen = [], set()
         for d in docs:
             key = (d.file_id, d.section or d.page)
