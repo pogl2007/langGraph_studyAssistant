@@ -1,3 +1,5 @@
+import unicodedata
+
 import pytest
 
 from app.ingest.indexer import make_file_id, safe_filename
@@ -68,6 +70,7 @@ def test_search_without_collection_returns_nothing(embedder, store):
         ("..\\..\\windows\\system.ini", "system.ini"),
         ("Лекция 1: введение.pdf", "Лекция 1_ введение.pdf"),
         ("/abs/path/notes.pdf", "notes.pdf"),
+        ("Лекция_8_" + unicodedata.normalize("NFD", "Действие") + ".pdf", "Лекция_8_Действие.pdf"),  # «й» = «и» + бреве
     ],
 )
 def test_safe_filename(raw, expected):

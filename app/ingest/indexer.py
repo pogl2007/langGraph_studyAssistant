@@ -8,6 +8,7 @@ import hashlib
 import logging
 import re
 import time
+import unicodedata
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -36,6 +37,9 @@ class IndexResult:
 
 def safe_filename(name: str) -> str:
     """Оставляет только имя файла без каталогов и опасных символов: «../../etc/passwd» → «passwd»."""
+    # Имена из macOS и некоторых мессенджеров приходят в NFD: «й» = «и» + отдельный знак бреве.
+    # Без нормализации знак считается «опасным символом» и «Действие» превращается в «Деи_ствие».
+    name = unicodedata.normalize("NFC", name)
     base = Path(name.replace("\\", "/")).name
     base = _UNSAFE.sub("_", base).strip(" .")
     if not base:
