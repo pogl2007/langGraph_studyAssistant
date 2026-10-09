@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.answer.citations import is_refusal  # noqa: E402
 from app.answer.prompts import answer_messages  # noqa: E402
 from app.config import get_settings  # noqa: E402
-from app.llm.client import LLMClient  # noqa: E402
+from app.llm.client import Provider  # noqa: E402
 from app.retrieval.store import ScoredChunk  # noqa: E402
 from app.services import get_retriever  # noqa: E402
 
@@ -96,13 +96,13 @@ class Pacer:
 
 
 async def run_case(
-    llm: LLMClient, case: dict, chunks: list[ScoredChunk], sem: asyncio.Semaphore, pacer: Pacer
+    llm: Provider, case: dict, chunks: list[ScoredChunk], sem: asyncio.Semaphore, pacer: Pacer
 ) -> Run:
     async with sem:
         for attempt in range(6):
             await pacer.wait()
             try:
-                c = await llm.complete(answer_messages(case["q"], chunks))
+                c = await llm.complete(answer_messages(case["q"], chunks), max_tokens=1024, temperature=0.1)
                 break
             except RateLimitError as e:
                 # Ждём сколько сказал сервер; латентность успешной попытки это ожидание не включает.
@@ -135,12 +135,8 @@ async def main(args: argparse.Namespace) -> None:
 
     sem = asyncio.Semaphore(args.concurrency)
     pacer = Pacer(60 / args.rpm)
-    # Без ретраев: ретрай с ожиданием Retry-After испортил бы замер латентности.
-    clients = [
-        LLMClient(s.llm_base_url, s.llm_api_key.get_secret_value(), m, timeout=120, max_tokens=1024,
-                  temperature=0.1, max_retries=0)
-        for m in args.models
-    ]
+    # Провайдер напрямую, без LLMClient: его ретраи с ожиданием Retry-After испортили бы замер латентности.
+    clients = [Provider(m, s.llm_base_url, s.llm_api_key.get_secret_value(), m, timeout=120) for m in args.models]
     # Вопросы идут по кругу между моделями, чтобы колебания нагрузки на провайдера не легли на одну модель.
     jobs = [(llm, c) for c in CASES for llm in clients]
     runs = await asyncio.gather(*(run_case(llm, c, contexts[c["id"]], sem, pacer) for llm, c in jobs))
