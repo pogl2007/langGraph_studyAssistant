@@ -18,7 +18,7 @@ class Reranker(Protocol):
 
 
 class CrossEncoderReranker:
-    def __init__(self, model_name: str, device: str = "cpu", max_length: int = 512, batch_size: int = 16):
+    def __init__(self, model_name: str, device: str = "cpu", max_length: int = 512, batch_size: int = 4):
         from sentence_transformers import CrossEncoder
 
         self.model_name = model_name

@@ -6,9 +6,13 @@ from pathlib import Path
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Корень проекта: .env и data/ ищем от него, а не от текущей папки — API, интерфейс и CLI
+# можно запускать откуда угодно. В Docker это /srv.
+ROOT = Path(__file__).resolve().parents[1]
+
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(env_file=ROOT / ".env", env_file_encoding="utf-8", extra="ignore")
 
     # Qdrant. v2 — коллекция с dense и sparse векторами и структурным чанкингом
     qdrant_url: str = "http://localhost:6333"
@@ -31,12 +35,15 @@ class Settings(BaseSettings):
     top_k: int = 5
     rerank_enabled: bool = True
     reranker_model: str = "BAAI/bge-reranker-v2-m3"
-    rerank_candidates: int = 20
+    # 10 на CPU: замер на лекциях — первое место то же, что при 20, а время 4,7 с вместо 8,6 с
+    rerank_candidates: int = 10
     rerank_max_length: int = 512
     # Пороги по скору реранкера (сигмоида, 0..1): выше relevance_threshold — ответ в материалах есть,
     # ниже relevance_floor — точно нет, между ними спрашиваем LLM. Без реранкера порог не применяется.
     relevance_threshold: float = 0.3
     relevance_floor: float = 0.05
+    # При отказе показываем «ближайшие темы» только с хоть какой-то релевантностью
+    nearest_min_relevance: float = 0.01
     # Порог по косинусу для режима без реранкера. 0 — выключен, решает LLM.
     min_score: float = 0.0
 
@@ -68,7 +75,7 @@ class Settings(BaseSettings):
     llm_max_retry_wait: float = 8.0
 
     # Данные
-    data_dir: Path = Path("data")
+    data_dir: Path = ROOT / "data"
     max_upload_mb: int = 50
 
     # API и интерфейс
