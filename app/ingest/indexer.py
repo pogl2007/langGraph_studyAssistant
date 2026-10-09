@@ -83,6 +83,8 @@ class Indexer:
         existing = self.store.get_file(file_id) if self.store.exists() else None
         if existing and existing.get("file_hash") == file_hash and not force:
             # Тот же файл загрузили ещё раз — ни парсинга, ни эмбеддингов.
+            # Но оригинал сохраняем, если его нет (новый volume): иначе ссылки цитат вели бы в 404.
+            self._save_original(file_id, data)
             log.info("пропущен %s: содержимое не изменилось", filename)
             return IndexResult(file_id, filename, existing["pages_total"], existing["chunks_total"],
                                time.perf_counter() - started, status="unchanged")
@@ -128,13 +130,20 @@ class Indexer:
             self.store.upsert(stored, dense, sparse)
         self.store.delete_file(file_id, from_chunk_index=len(stored))
 
-        if self.files_dir:  # оригинал нужен, чтобы цитата открывала PDF на нужной странице
-            self.files_dir.mkdir(parents=True, exist_ok=True)
-            (self.files_dir / f"{file_id}.pdf").write_bytes(data)
+        self._save_original(file_id, data, overwrite=True)
 
         result = IndexResult(file_id, filename, len(pages), len(chunks), time.perf_counter() - started)
         log.info("индексирован %s: %d стр., %d чанков, %.1f с", filename, result.pages, result.chunks, result.seconds)
         return result
+
+    def _save_original(self, file_id: str, data: bytes, overwrite: bool = False) -> None:
+        """Оригинал нужен, чтобы цитата открывала PDF на нужной странице."""
+        if not self.files_dir:
+            return
+        path = self.files_dir / f"{file_id}.pdf"
+        if overwrite or not path.exists():
+            self.files_dir.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
 
     def delete(self, file_id: str) -> None:
         if self.store.exists():

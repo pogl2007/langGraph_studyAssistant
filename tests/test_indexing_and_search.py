@@ -135,3 +135,14 @@ def test_original_file_saved_and_removed(embedder, store, sparse, tmp_path):
     idx.delete(r.file_id)
     assert not (tmp_path / f"{r.file_id}.pdf").exists()
     assert store.list_files() == []
+
+
+def test_unchanged_file_restores_missing_original(embedder, store, sparse, tmp_path):
+    from app.ingest.indexer import Indexer
+
+    data = make_pdf(PHYSICS)
+    Indexer(embedder, store, 40, 5, sparse=sparse).index_pdf("physics.pdf", data, course="physics")
+    # тот же Qdrant, но новый каталог файлов (новый volume в Docker)
+    r = Indexer(embedder, store, 40, 5, sparse=sparse, files_dir=tmp_path).index_pdf("physics.pdf", data, course="physics")
+    assert r.status == "unchanged"
+    assert (tmp_path / f"{r.file_id}.pdf").read_bytes() == data
