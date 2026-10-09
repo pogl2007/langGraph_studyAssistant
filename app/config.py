@@ -40,7 +40,8 @@ class Settings(BaseSettings):
     rerank_max_length: int = 512
     # Пороги по скору реранкера (сигмоида, 0..1): выше relevance_threshold — ответ в материалах есть,
     # ниже relevance_floor — точно нет, между ними спрашиваем LLM. Без реранкера порог не применяется.
-    relevance_threshold: float = 0.3
+    # 0.5 — середина измеренного зазора: худший вопрос с ответом 0.688, лучший без ответа 0.315 (eval/results/retrieval.md)
+    relevance_threshold: float = 0.5
     relevance_floor: float = 0.05
     # При отказе показываем «ближайшие темы» только с хоть какой-то релевантностью
     nearest_min_relevance: float = 0.01
