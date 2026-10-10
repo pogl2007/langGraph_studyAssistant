@@ -15,14 +15,12 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from openai import RateLimitError
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.answer.citations import is_refusal  # noqa: E402
 from app.answer.prompts import answer_messages  # noqa: E402
 from app.config import get_settings  # noqa: E402
-from app.llm.client import Provider  # noqa: E402
+from app.llm.client import Provider, RateLimited  # noqa: E402
 from app.retrieval.store import ScoredChunk  # noqa: E402
 from app.services import get_retriever  # noqa: E402
 
@@ -104,9 +102,9 @@ async def run_case(
             try:
                 c = await llm.complete(answer_messages(case["q"], chunks), max_tokens=1024, temperature=0.1)
                 break
-            except RateLimitError as e:
+            except RateLimited as e:
                 # Ждём сколько сказал сервер; латентность успешной попытки это ожидание не включает.
-                wait = float(e.response.headers.get("retry-after") or _retry_in(str(e)) or 60)
+                wait = float(e.retry_after or _retry_in(str(e)) or 60)
                 print(f"{llm.model:28} {case['id']:10} 429, жду {wait:.0f} с", flush=True)
                 await asyncio.sleep(wait + 1)
             except Exception as e:
