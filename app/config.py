@@ -68,6 +68,20 @@ class Settings(BaseSettings):
     llm_fallback_api_key: SecretStr = SecretStr("not-needed")
     llm_fallback_model: str = ""
     llm_timeout: float = 60.0
+
+    # GigaChat (Сбер): отдельный адаптер — свой OAuth и свой SDK
+    gigachat_credentials: SecretStr = SecretStr("")  # ключ авторизации: base64 от client_id:client_secret
+    gigachat_scope: str = "GIGACHAT_API_PERS"
+    gigachat_model: str = "GigaChat-3-Ultra"
+    gigachat_base_url: str = ""  # пусто — адрес по умолчанию из SDK
+    gigachat_auth_url: str = ""
+    # Сертификаты GigaChat подписаны корнем Минцифры: укажите путь к нему или выключите проверку
+    gigachat_verify_ssl: bool = True
+    gigachat_ca_bundle: str = ""
+
+    # Порядок провайдеров: openai (LLM_* выше + LLM_FALLBACK_MODELS), gigachat, fallback.
+    # Не настроенные звенья пропускаются.
+    llm_chain: str = "openai,gigachat,fallback"
     # С запасом: у рассуждающих моделей скрытые рассуждения тоже тратят этот лимит
     llm_max_tokens: int = 2048
     llm_temperature: float = 0.1
