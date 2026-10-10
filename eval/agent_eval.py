@@ -20,6 +20,7 @@ import asyncio
 import json
 import logging
 import statistics
+from collections import Counter
 import sys
 import time
 import uuid
@@ -147,6 +148,7 @@ async def run(args: argparse.Namespace) -> None:
             "cited_hit": cited_hit(state.get("citations", []), q["expected"]) if q["expected"] else None,
             "latency_s": round(latency, 2),
             "llm_calls": len(calls),
+            "providers": sorted({c.provider for c in calls}),
             "tokens_in": sum(c.input_tokens for c in calls),
             "tokens_out": sum(c.output_tokens for c in calls),
             "error": error,
@@ -159,18 +161,19 @@ async def run(args: argparse.Namespace) -> None:
                     {"role": "user", "content": f"Вопрос: {q['question']}\n\nЭталон: {q['reference']}\n\n"
                                                 f"{format_documents(docs)}\n\nОтвет ассистента:\n{r['answer']}"},
                 ], Verdict, max_tokens=1024)
-                r["judge"] = verdict.model_dump()
+                r["judge"] = {**verdict.model_dump(), "provider": llm.calls[-1].provider}
             except Exception as e:
                 r["judge"] = {"error": str(e)[:200]}
         results.append(r)
         flag = "отказ" if r["no_answer"] else ("ОШИБКА" if error or r["llm_unavailable"] else r.get("judge", {}).get("correctness", "-"))
         print(f"[{i}/{len(questions)}] {q['id']} {flag:8} {latency:5.1f} с  {' → '.join(path)}", flush=True)
 
+    chain = " → ".join(f"{p.name} ({p.model})" for p in llm.inner.providers)
     await llm.inner.aclose()
-    report(results, args, s)
+    report(results, args, chain)
 
 
-def report(results: list[dict], args, s) -> None:
+def report(results: list[dict], args, chain: str) -> None:
     ok = [r for r in results if not r["error"] and not r["llm_unavailable"]]
     ans = [r for r in ok if r["answerable"]]
     unans = [r for r in ok if not r["answerable"]]
@@ -196,13 +199,14 @@ def report(results: list[dict], args, s) -> None:
         "llm_calls_per_question": statistics.mean(r["llm_calls"] for r in ok) if ok else None,
         "tokens_in_per_question": statistics.mean(r["tokens_in"] for r in ok) if ok else None,
         "tokens_out_per_question": statistics.mean(r["tokens_out"] for r in ok) if ok else None,
-        "model": s.llm_model,
+        "llm_chain": chain,
+        "answered_by": dict(Counter(p for r in ok for p in r["providers"])),
     }
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.with_suffix(".json").write_text(json.dumps({"metrics": m, "results": results}, ensure_ascii=False, indent=2), "utf-8")
     md = [
-        f"Модель {s.llm_model}, судья — та же модель. Вопросов: {m['answerable']} с ответом, {m['unanswerable']} без ответа"
+        f"Цепочка LLM: {chain}; судья — та же цепочка. Вопросов: {m['answerable']} с ответом, {m['unanswerable']} без ответа"
         + (f"; исключено из-за недоступности LLM: {m['excluded_llm_errors']}" if m["excluded_llm_errors"] else "") + ".",
         "",
         "| Метрика | Значение |",
@@ -216,6 +220,8 @@ def report(results: list[dict], args, s) -> None:
         f"| Задержка ответа p50 / p95 | {m['latency_p50']:.1f} с / {m['latency_p95']:.1f} с |",
         f"| Вызовов LLM на вопрос | {m['llm_calls_per_question']:.2f} |",
         f"| Токенов на вопрос (вход / выход) | {m['tokens_in_per_question']:.0f} / {m['tokens_out_per_question']:.0f} |",
+        "",
+        "Какой провайдер отвечал (вопросов): " + ", ".join(f"{k} — {v}" for k, v in m["answered_by"].items()),
     ]
     out.with_suffix(".md").write_text("\n".join(md) + "\n", "utf-8")
     print("\n".join(md))

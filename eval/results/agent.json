@@ -1,0 +1,1648 @@
+{
+  "metrics": {
+    "questions_total": 58,
+    "excluded_llm_errors": 0,
+    "answerable": 50,
+    "unanswerable": 8,
+    "answered_rate": 1.0,
+    "citation_hit_rate": 1.0,
+    "correct_rate": 1.0,
+    "correct_or_partial_rate": 1.0,
+    "faithful_rate": 1.0,
+    "correct_refusal_rate": 1.0,
+    "latency_p50": 6.74,
+    "latency_p95": 19.08,
+    "llm_calls_per_question": 1.2241379310344827,
+    "tokens_in_per_question": 862.6034482758621,
+    "tokens_out_per_question": 43.6551724137931,
+    "llm_chain": "gigachat (GigaChat-3-Ultra) → primary (free/glm-5.3-flash) → primary:free/gpt-6-luna (free/gpt-6-luna)",
+    "answered_by": {
+      "gigachat": 58
+    }
+  },
+  "results": [
+    {
+      "id": "q01",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Точечным зарядом называется заряженное тело, размером которого можно пренебречь по сравнению с расстоянием от этого тела до других тел, несущих электрические заряды. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.99,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1044,
+      "tokens_out": 38,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с определением из лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q02",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Сила взаимодействия двух неподвижных точечных зарядов обратно пропорциональна квадрату расстояния между ними. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.49,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1215,
+      "tokens_out": 23,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Сила взаимодействия обратно пропорциональна квадрату расстояния, как установлено законом Кулона.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q03",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "В 1785 году французский учёный Шарль Кулон экспериментально установил закон взаимодействия неподвижных точечных зарядов. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.24,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 880,
+      "tokens_out": 29,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q04",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Закон сохранения электрического заряда утверждает, что суммарный заряд изолированной системы не может измениться. Элементарные заряды могут исчезать и рождаться только парами с одинаковыми по величине и противоположными по знаку зарядами. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 2]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.63,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 45,
+      "tokens_out": 51,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с формулировкой из лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q05",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Напряжённость электрического поля — это векторная физическая величина, равная отношению силы, с которой поле действует на положительный пробный заряд в данной точке пространства, к величине этого заряда. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 5]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.47,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 780,
+      "tokens_out": 40,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с определением из лекции на стр. 5.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q06",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Силовая линия электрического поля — это линия, в каждой точке которой касательная совпадает с вектором напряженности поля. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 7]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.15,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 916,
+      "tokens_out": 30,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Определение полностью совпадает с приведённым в лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q07",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Нет, силовые линии электростатического поля никогда не пересекаются друг с другом. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 7]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.74,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1061,
+      "tokens_out": 22,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q08",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Теорема Гаусса связывает поток вектора напряжённости через замкнутую поверхность с величиной зарядов, находящихся в объёме, ограниченном этой поверхностью. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 10]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 9.86,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1469,
+      "tokens_out": 37,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ точно соответствует формулировке теоремы Гаусса из лекции на стр. 10.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q09",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Напряжённость электрического поля внутри равномерно заряженной сферы равна нулю. [Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 13][Лекция_2_Электрическое_поле_в_вакууме_Потенциал_электрического_поля.pdf, стр. 9]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.32,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 886,
+      "tokens_out": 20,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и подтверждается фрагментами лекций.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q10",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Потенциалом электростатического поля в некоторой точке пространства называется отношение потенциальной энергии положительного пробного заряда q, помещенного в данную точку, к величине этого заряда. [Лекция_2_Электрическое_поле_в_вакууме_Потенциал_электрического_поля.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.19,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 867,
+      "tokens_out": 39,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с определением из лекции (стр. 3).",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q11",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Потенциал измеряется в вольтах (В), что соответствует джоулю на кулон (Дж/Кл) в Международной системе единиц. [Лекция_2_Электрическое_поле_в_вакууме_Потенциал_электрического_поля.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.4,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 989,
+      "tokens_out": 34,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q12",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Эквипотенциальная поверхность — это такая поверхность, все точки которой имеют один и тот же потенциал. Работа по перемещению заряда по такой поверхности равна нулю, поэтому силовые линии электростатического поля всегда перпендикулярны эквипотенциальной поверхности. [Лекция_2_Электрическое_поле_в_вакууме_Потенциал_электрического_поля.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.4,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1186,
+      "tokens_out": 61,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует определению из лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q13",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Работа электростатических сил при перемещении заряда по любому замкнутому контуру равна нулю. [Лекция_2_Электрическое_поле_в_вакууме_Потенциал_электрического_поля.pdf, стр. 2]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.32,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 738,
+      "tokens_out": 24,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ точно соответствует эталону и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q14",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Да, для потенциалов выполняется принцип суперпозиции: результирующий потенциал в точке равен алгебраической сумме потенциалов от каждого заряда системы. [Лекция_2_Электрическое_поле_в_вакууме_Потенциал_электрического_поля.pdf, стр. 6]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.58,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 826,
+      "tokens_out": 34,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q15",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Полярные диэлектрики состоят из полярных молекул, таких как HCl, H₂O, C₂H₅OH и др. [Лекция_3_Электрическое_поле_в_диэлектриках.pdf, стр. 2]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.8,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 711,
+      "tokens_out": 34,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталонному и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q16",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Дипольный момент — это вектор, равный произведению положительного заряда на плечо диполя и направленный от отрицательного заряда к положительному. [Лекция_3_Электрическое_поле_в_диэлектриках.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.7,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1011,
+      "tokens_out": 33,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Определение полностью совпадает с приведённым в лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q17",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Вектор поляризации описывает дипольный момент единицы объёма диэлектрика, то есть векторную сумму дипольных моментов молекул в физически малом объёме [Лекция_3_Электрическое_поле_в_диэлектриках.pdf, стр. 5].",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.05,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 759,
+      "tokens_out": 33,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ точно соответствует определению из лекции (стр. 5).",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q18",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Электрическое поле внутри диэлектрика слабее внешнего, потому что под действием поля происходит поляризация. На поверхности диэлектрика возникают связанные заряды, которые создают собственное электрическое поле, направленное противоположно внешнему и ослабляющее его [Лекция_3_Электрическое_поле_в_диэлектриках.pdf, стр. 6][Лекция_3_Электрическое_поле_в_диэлектриках.pdf, стр. 9].",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.33,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 849,
+      "tokens_out": 52,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ точно отражает механизм ослабления поля за счёт связанных зарядов.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q19",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "В теореме Гаусса для диэлектриков необходимо учитывать не только свободные (сторонние), но и связанные заряды. [Лекция_3_Электрическое_поле_в_диэлектриках.pdf, стр. 10]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.76,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1200,
+      "tokens_out": 29,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и подтверждается фрагментом со стр. 10.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q20",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "При переходе через границу раздела двух диэлектриков линии вектора напряженности электрического поля и линии электрической индукции преломляются. [Лекция_3_Электрическое_поле_в_диэлектриках.pdf, стр. 13]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.18,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 594,
+      "tokens_out": 29,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ точно соответствует эталону и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q21",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Проводниками называются вещества, содержащие свободные заряды, способные перемещаться по всему объёму под действием сколь угодно слабого электрического поля. К ним относятся металлы, щелочи, кислоты и солевые растворы. [Лекция 6. Электрический ток.pdf, стр. 2][Лекция_4_Проводники_в_электрическом_поле.pdf, стр. 2]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.46,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 797,
+      "tokens_out": 49,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с определением и примерами из лекций.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q22",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Избыточные заряды располагаются только на поверхности проводника. [Лекция_4_Проводники_в_электрическом_поле.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.68,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1056,
+      "tokens_out": 18,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментами лекций.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q23",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Да, все точки проводника имеют одинаковый потенциал. [Лекция_4_Проводники_в_электрическом_поле.pdf, стр. 6]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.08,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1016,
+      "tokens_out": 17,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментами.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q24",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Электростатическая индукция — это явление, при котором свободные заряды в незаряженном проводнике под действием внешнего электрического поля перераспределяются. В результате на одной стороне проводника образуется избыток отрицательных зарядов, а на другой — положительных. Поле этих индуцированных зарядов полностью компенсирует внешнее поле внутри проводника, поэтому суммарное электростатическое поле внутри него равно нулю [Лекция_4_Проводники_в_электрическом_поле.pdf, стр. 7].",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.42,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1009,
+      "tokens_out": 88,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует определению из лекции и включает ключевое следствие о нулевом поле внутри проводника.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q25",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Заземлённая проводящая оболочка полностью экранирует поле заряда внутри неё: во внешнем пространстве поле становится равным нулю, и наличие внутреннего заряда снаружи не проявляется. [Лекция_4_Проводники_в_электрическом_поле.pdf, стр. 9]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.56,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 733,
+      "tokens_out": 40,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментом со стр. 9.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q26",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Электроёмкость уединённого проводника — это коэффициент пропорциональности C между зарядом q на проводнике и его потенциалом, определяемый только геометрическими параметрами тела (размером и формой) и диэлектрической проницаемостью среды. Она показывает, какой заряд нужно сообщить проводнику, чтобы повысить его потенциал на 1 В, и измеряется в фарадах [Лекция_5_Электроемкость_Конденсаторы.pdf, стр. 2].",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.5,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 863,
+      "tokens_out": 79,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует определению из лекций.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q27",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Ёмкость конденсатора определяется как величина, пропорциональная заряду q на положительной обкладке и обратно пропорциональная разности потенциалов U между обкладками. [Лекция_5_Электроемкость_Конденсаторы.pdf, стр. 4]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.26,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 942,
+      "tokens_out": 40,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с определением ёмкости конденсатора из лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q28",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Ёмкость плоского конденсатора зависит от площади его обкладок S, расстояния между ними d и диэлектрической проницаемости среды ε, находящейся между пластинами. [Лекция_5_Электроемкость_Конденсаторы.pdf, стр. 4][Лекция_5_Электроемкость_Конденсаторы.pdf, стр. 12]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.17,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 902,
+      "tokens_out": 43,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментами лекций.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q29",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "При параллельном соединении конденсаторов напряжение на каждом из них одинаково и равно напряжению батареи, а полный заряд равен сумме зарядов отдельных конденсаторов. Общая ёмкость C всей системы равна сумме ёмкостей отдельных конденсаторов: $C = C_1 + C_2 +...$ [Лекция_5_Электроемкость_Конденсаторы.pdf, стр. 8].",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.0,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 822,
+      "tokens_out": 61,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментом со стр. 8.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q30",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Энергия заряженного конденсатора равна $W = \\frac{qU}{2}$, где $q$ — заряд, а $U$ — разность потенциалов. Учитывая соотношение $q = CU$, её также можно выразить как $W = \\frac{CU^2}{2}$ или $W = \\frac{q^2}{2C}$. [Лекция_5_Электроемкость_Конденсаторы.pdf, стр. 10]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.47,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 931,
+      "tokens_out": 75,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и подтверждается фрагментом со стр. 10.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q31",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Энергия заряженного конденсатора сосредоточена в создаваемом им электрическом поле, то есть распределена с определенной плотностью в каждом малом объеме пространства между обкладками. [Лекция_5_Электроемкость_Конденсаторы.pdf, стр. 11]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.3,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 909,
+      "tokens_out": 40,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и подтверждается фрагментом со стр. 11.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q32",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Электрическим током называется направленное упорядоченное движение заряженных частиц. [Лекция 6. Электрический ток.pdf, стр. 2]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.2,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1104,
+      "tokens_out": 19,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с определением из лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q33",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Для возникновения тока проводимости необходимы два условия: наличие в среде свободных зарядов, способных перемещаться на большие расстояния (электроны, ионы), и наличие электрического поля, энергия которого затрачивается на их перемещение. [Лекция 6. Электрический ток.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.74,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1305,
+      "tokens_out": 48,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует условиям из лекции на стр. 3.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q34",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Электродвижущая сила (ЭДС) — это величина, равная работе сторонних сил по переносу единичного положительного заряда по данному участку цепи. [Лекция 6. Электрический ток.pdf, стр. 7]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.75,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 184,
+      "tokens_out": 36,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q35",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Сила тока на однородном участке цепи пропорциональна падению напряжения на этом участке и выражается формулой, где R — электрическое сопротивление проводника. [Лекция 6. Электрический ток.pdf, стр. 8]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.43,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 641,
+      "tokens_out": 34,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с формулировкой из лекции на стр. 8.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q36",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Алгебраическая сумма токов ветвей, сходящихся в каждом узле любой цепи, равна нулю. При этом направленный к узлу ток принято считать положительным, а направленный от узла — отрицательным. [Лекция 6. Электрический ток.pdf, стр. 12]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.66,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 857,
+      "tokens_out": 48,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с формулировкой из лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q37",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Общее сопротивление при последовательном соединении проводников равно сумме сопротивлений отдельных проводников, входящих в цепь: R = R₁ + R₂ + … [Лекция 6. Электрический ток.pdf, стр. 10].",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.42,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 762,
+      "tokens_out": 38,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и фрагментам лекций.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q38",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Выделение тепла в проводнике с током описывает закон Джоуля–Ленца. [Лекция 6. Электрический ток.pdf, стр. 14]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.17,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 908,
+      "tokens_out": 23,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ точно соответствует эталону и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q39",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Действие проводника с током на магнитную стрелку открыл Эрстед в 1820 году. [Лекция_7_Магнитное_поле_в_вакууме.pdf, стр. 2]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.47,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 966,
+      "tokens_out": 27,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q40",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Силовые линии магнитного поля всегда замкнуты, что указывает на вихревой характер поля и отсутствие магнитных зарядов. В отличие от них, силовые линии электростатического поля не замкнуты: они начинаются на положительных зарядах и заканчиваются на отрицательных или уходят в бесконечность [Лекция_7_Магнитное_поле_в_вакууме.pdf, стр. 2][Лекция_1_Электрическое_поле_в_вакууме_Напряженность_электрического.pdf, стр. 7].",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.91,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1046,
+      "tokens_out": 67,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ точно отражает ключевое отличие: замкнутость линий магнитного поля и разомкнутость электростатических.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q41",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Индукцию магнитного поля элемента тока позволяет найти закон Био-Савара-Лапласа. [Лекция_7_Магнитное_поле_в_вакууме.pdf, стр. 4]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.36,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 970,
+      "tokens_out": 24,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q42",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Поток вектора магнитной индукции через произвольную замкнутую поверхность равен нулю. Это объясняется тем, что в природе не существует магнитных зарядов (монополей), на которых начинались бы или заканчивались линии магнитной индукции; магнитные полюсы всегда встречаются парами. [Лекция_7_Магнитное_поле_в_вакууме.pdf, стр. 12][Лекция_8_Действие_магнитного_поля_на_электрический_ток.pdf, стр. 8]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.92,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 898,
+      "tokens_out": 65,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и подтверждается лекциями.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q43",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Внутри длинного соленоида (вдали от краёв) возникает однородное магнитное поле, направленное параллельно оси соленоида. [Лекция_7_Магнитное_поле_в_вакууме.pdf, стр. 14]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.24,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 683,
+      "tokens_out": 33,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с эталоном и подтверждается фрагментом лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q44",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "1 тесла — это индукция такого однородного магнитного поля, которое действует с силой в 1 Н на каждый метр длины прямолинейного проводника, расположенного перпендикулярно направлению поля, если по этому проводнику течёт ток в 1 А (1 Тл = 1 Н/(А · м)). [Лекция_8_Действие_магнитного_поля_на_электрический_ток.pdf, стр. 2]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 5.74,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 856,
+      "tokens_out": 68,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с определением из лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q45",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Проводники с токами, текущими в одну сторону, притягиваются. [Лекция_8_Действие_магнитного_поля_на_электрический_ток.pdf, стр. 3]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.32,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 974,
+      "tokens_out": 20,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует утверждению из лекции на стр. 3.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q46",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Движение частицы представляет собой винтовую линию (спираль). Это происходит потому, что её скорость раскладывается на две составляющие: параллельная полю составляющая вызывает равномерное движение вдоль линий поля, а перпендикулярная — движение по окружности в плоскости, перпендикулярной полю. [Лекция_9_Движение_заряженных_частиц_в_магнитном_поле.pdf, стр. 4]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.29,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1350,
+      "tokens_out": 58,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует фрагменту лекции о винтовой траектории.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q47",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Эффект Холла — это явление возникновения поперечной разности потенциалов (холловского напряжения) при помещении проводника с постоянным током в магнитное поле. [Лекция_9_Движение_заряженных_частиц_в_магнитном_поле.pdf, стр. 7]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.84,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 336,
+      "tokens_out": 38,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью совпадает с определением из эталона и фрагмента лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q48",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Циклотрон состоит из двух полых металлических полуцилиндров (дуантов), помещенных в вакуумный корпус между полюсами большого электромагнита, создающего однородное поле. На дуанты подано переменное напряжение для создания ускоряющего электрического поля в зазоре между ними [Лекция_9_Движение_заряженных_частиц_в_магнитном_поле.pdf, стр. 8]. Заряженные частицы вводятся в центр зазора и движутся по раскручивающейся спирали внутри дуантов, получая ускорение при каждом прохождении зазора [Лекция_9_Движение_заряженных_частиц_в_магнитном_поле.pdf, стр. 8].",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.96,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 443,
+      "tokens_out": 99,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и фрагментам лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q49",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Полярное сияние возникает из-за свечения верхних слоёв атмосферы, которое происходит при взаимодействии с заряженными частицами солнечного ветра. Эти частицы прорываются в магнитное поле Земли и сталкиваются с молекулами воздуха на высоте около 100 км над поверхностью планеты.[Лекция_9_Движение_заряженных_частиц_в_магнитном_поле.pdf, стр. 6][Лекция_9_Движение_заряженных_частиц_в_магнитном_поле.pdf, стр. 5]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 7.89,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 421,
+      "tokens_out": 59,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует эталону и подтверждается фрагментами лекций.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "q50",
+      "answerable": true,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "generate"
+      ],
+      "answer": "Северный магнитный полюс Земли расположен на юге, в Антарктиде. [Лекция_9_Движение_заряженных_частиц_в_магнитном_поле.pdf, стр. 5]",
+      "no_answer": false,
+      "llm_unavailable": false,
+      "cited_hit": true,
+      "latency_s": 6.94,
+      "llm_calls": 1,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 389,
+      "tokens_out": 20,
+      "error": null,
+      "judge": {
+        "correctness": "correct",
+        "faithful": true,
+        "comment": "Ответ полностью соответствует фрагменту лекции.",
+        "provider": "gigachat"
+      }
+    },
+    {
+      "id": "n01",
+      "answerable": false,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "no_answer"
+      ],
+      "answer": "В материалах этого нет.",
+      "no_answer": true,
+      "llm_unavailable": false,
+      "cited_hit": null,
+      "latency_s": 15.95,
+      "llm_calls": 2,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 409,
+      "tokens_out": 26,
+      "error": null
+    },
+    {
+      "id": "n02",
+      "answerable": false,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "no_answer"
+      ],
+      "answer": "В материалах этого нет.",
+      "no_answer": true,
+      "llm_unavailable": false,
+      "cited_hit": null,
+      "latency_s": 18.24,
+      "llm_calls": 2,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 419,
+      "tokens_out": 27,
+      "error": null
+    },
+    {
+      "id": "n03",
+      "answerable": false,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "no_answer"
+      ],
+      "answer": "В материалах этого нет.\n\nБлиже всего в материалах:\n- «Дифференциальное соотношение между напряженностью и потенциалом» — Лекция_2_Электрическое_поле_в_вакууме_Потенциал_электрического_поля.pdf, стр. 5\n- «Магнитное поле бесконечного прямолинейного тока» — Лекция_7_Магнитное_поле_в_вакууме.pdf, стр. 13\n- «Решение задачи» — Лекция_7_Магнитное_поле_в_вакууме.pdf, стр. 17",
+      "no_answer": true,
+      "llm_unavailable": false,
+      "cited_hit": null,
+      "latency_s": 18.53,
+      "llm_calls": 4,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1314,
+      "tokens_out": 110,
+      "error": null
+    },
+    {
+      "id": "n04",
+      "answerable": false,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "no_answer"
+      ],
+      "answer": "В материалах этого нет.\n\nБлиже всего в материалах:\n- «Индуцированными зарядами можно зарядить проводник.» — Лекция_4_Проводники_в_электрическом_поле.pdf, стр. 8\n- «Устройство циклотрона» — Лекция_9_Движение_заряженных_частиц_в_магнитном_поле.pdf, стр. 8",
+      "no_answer": true,
+      "llm_unavailable": false,
+      "cited_hit": null,
+      "latency_s": 19.68,
+      "llm_calls": 2,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 424,
+      "tokens_out": 32,
+      "error": null
+    },
+    {
+      "id": "n05",
+      "answerable": false,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "no_answer"
+      ],
+      "answer": "В материалах этого нет.",
+      "no_answer": true,
+      "llm_unavailable": false,
+      "cited_hit": null,
+      "latency_s": 21.13,
+      "llm_calls": 2,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 308,
+      "tokens_out": 55,
+      "error": null
+    },
+    {
+      "id": "n06",
+      "answerable": false,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "no_answer"
+      ],
+      "answer": "В материалах этого нет.\n\nБлиже всего в материалах:\n- «Уравнение непрерывности» — Лекция 6. Электрический ток.pdf, стр. 4",
+      "no_answer": true,
+      "llm_unavailable": false,
+      "cited_hit": null,
+      "latency_s": 19.08,
+      "llm_calls": 2,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 304,
+      "tokens_out": 53,
+      "error": null
+    },
+    {
+      "id": "n07",
+      "answerable": false,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "generate",
+        "no_answer"
+      ],
+      "answer": "В материалах этого нет.\n\nБлиже всего в материалах:\n- «Электродвижущая сила (ЭДС)» — Лекция 6. Электрический ток.pdf, стр. 7\n- «Работа при перемещении контура с током в магнитном поле» — Лекция_8_Действие_магнитного_поля_на_электрический_ток.pdf, стр. 10\n- «Последовательность действий» — Лекция 6. Электрический ток.pdf, стр. 13",
+      "no_answer": true,
+      "llm_unavailable": false,
+      "cited_hit": null,
+      "latency_s": 12.93,
+      "llm_calls": 3,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 1616,
+      "tokens_out": 58,
+      "error": null
+    },
+    {
+      "id": "n08",
+      "answerable": false,
+      "path": [
+        "route",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "rewrite",
+        "retrieve",
+        "grade",
+        "generate",
+        "no_answer"
+      ],
+      "answer": "В материалах этого нет.\n\nБлиже всего в материалах:\n- «Сила тока в проводнике» — Лекция 6. Электрический ток.pdf, стр. 3\n- «Количество тепла; Тепловая мощность» — Лекция 6. Электрический ток.pdf, стр. 14\n- «Тепловое действие тока» — Лекция 6. Электрический ток.pdf, стр. 14",
+      "no_answer": true,
+      "llm_unavailable": false,
+      "cited_hit": null,
+      "latency_s": 21.66,
+      "llm_calls": 4,
+      "providers": [
+        "gigachat"
+      ],
+      "tokens_in": 2138,
+      "tokens_out": 105,
+      "error": null
+    }
+  ]
+}
