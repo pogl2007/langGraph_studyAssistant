@@ -149,3 +149,19 @@ def test_retry_after_parsing():
 
     assert retry_after(E("Rate limit exceeded. Retry in 12s.")) == 12.0
     assert retry_after(E("nothing here")) is None
+
+
+def test_json_instruction_shows_example_not_schema():
+    from typing import Literal
+
+    from app.llm.structured import json_instruction
+
+    class Route(BaseModel):
+        route: Literal["question", "quiz"]
+        topic: str | None = None
+
+    text = json_instruction(Route)
+    # на голую JSON Schema GigaChat отвечал самой схемой
+    assert '"properties"' not in text
+    assert '"route": "question | quiz"' in text
+    assert "topic: может быть null" in text
