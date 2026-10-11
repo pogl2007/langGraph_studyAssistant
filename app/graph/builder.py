@@ -6,6 +6,7 @@
                                      ├─► rewrite ◄──────────┤ (не больше max_rewrites раз)
                                      │      └─► (ошибка) ───┴─► no_answer
                                      ├─► make_quiz ─► ask_quiz (interrupt) ─► check_quiz ─► END
+                                     ├─► illustrate (схема по теме из лекций, GigaChat) ─► END
                                      ├─► chitchat / out_of_scope / progress ─► END
 
 Точная схема генерируется из кода: `build_graph(...).get_graph().draw_mermaid()`.
@@ -38,6 +39,7 @@ def build_graph(nodes: AgentNodes, checkpointer=None, store=None, node_timeout: 
     g.add_node("make_quiz", nodes.make_quiz, destinations=("ask_quiz", "no_answer", END), **llm)
     g.add_node("ask_quiz", nodes.ask_quiz)
     g.add_node("check_quiz", nodes.check_quiz)
+    g.add_node("illustrate", nodes.illustrate, **llm)
     g.add_node("chitchat", nodes.chitchat, **llm)
     g.add_node("out_of_scope", nodes.out_of_scope)
     g.add_node("progress", nodes.progress)
@@ -45,12 +47,14 @@ def build_graph(nodes: AgentNodes, checkpointer=None, store=None, node_timeout: 
     g.add_conditional_edges(START, nodes.needs_summary, ["summarize", "route"])
     g.add_edge("summarize", "route")
     g.add_conditional_edges(
-        "route", nodes.after_route, ["retrieve", "rewrite", "make_quiz", "chitchat", "out_of_scope", "progress"]
+        "route",
+        nodes.after_route,
+        ["retrieve", "rewrite", "make_quiz", "illustrate", "chitchat", "out_of_scope", "progress"],
     )
     g.add_edge("retrieve", "grade")
     g.add_conditional_edges("grade", nodes.after_grade, ["generate", "rewrite", "no_answer"])
     g.add_edge("ask_quiz", "check_quiz")
-    for node in ("no_answer", "check_quiz", "chitchat", "out_of_scope", "progress"):
+    for node in ("no_answer", "check_quiz", "illustrate", "chitchat", "out_of_scope", "progress"):
         g.add_edge(node, END)
 
     return g.compile(checkpointer=checkpointer, store=store)

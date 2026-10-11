@@ -30,6 +30,7 @@ NODE_NAMES = {
     "chitchat": "разговор",
     "out_of_scope": "вне темы",
     "progress": "слабые темы",
+    "illustrate": "рисунок",
 }
 
 st.set_page_config(page_title="Ассистент по материалам", page_icon="📚", layout="wide")
@@ -78,7 +79,13 @@ def run_stream(events) -> dict | None:
             text = f"Тест по теме «{data['topic']}»: {len(data['questions'])} вопросов — ответьте ниже."
             final = {"role": "assistant", "text": text, "citations": [], "trace": trace}
         elif name == "answer":
-            final = {"role": "assistant", "text": data["text"], "citations": data["citations"], "trace": trace}
+            final = {
+                "role": "assistant",
+                "text": data["text"],
+                "citations": data["citations"],
+                "images": data.get("images", []),
+                "trace": trace,
+            }
         elif name == "error":
             final = {"role": "assistant", "text": f"⚠️ {data['message']}", "citations": [], "trace": trace}
     status.update(label=" → ".join(NODE_NAMES.get(n, n) for n in trace) or "готово", state="complete")
@@ -89,6 +96,8 @@ def run_stream(events) -> dict | None:
 def show_message(i: int, m: dict) -> None:
     with st.chat_message(m["role"]):
         st.markdown(m["text"])
+        for img in m.get("images", []):
+            st.image(img["url"], width=420)
         if m.get("citations"):
             st.caption("Источники: " + citations_md(m["citations"]))
         if m["role"] == "assistant" and i > 0:

@@ -77,9 +77,19 @@ def warm_up() -> None:
     get_reranker()
 
 
-def build_agent(llm: LLMClient, checkpointer=None, store=None, settings: Settings | None = None):
+def build_images(settings: Settings | None = None):
+    """Генератор картинок есть только у GigaChat; без его ключа узел illustrate честно скажет, что не умеет."""
     s = settings or get_settings()
-    nodes = AgentNodes(get_retriever(), llm, s, list_sections=get_store().list_sections)
+    if not s.gigachat_credentials.get_secret_value():
+        return None
+    from app.llm.images import GigaChatImageGenerator
+
+    return GigaChatImageGenerator.from_settings(s)
+
+
+def build_agent(llm: LLMClient, checkpointer=None, store=None, settings: Settings | None = None, images=None):
+    s = settings or get_settings()
+    nodes = AgentNodes(get_retriever(), llm, s, list_sections=get_store().list_sections, images=images)
     return build_graph(nodes, checkpointer=checkpointer, store=store, node_timeout=s.node_timeout)
 
 

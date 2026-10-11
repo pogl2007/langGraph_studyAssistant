@@ -32,8 +32,10 @@ def make_graph(indexer, retriever):
     indexer.index_pdf("lecture.pdf", make_pdf(LECTURE), course="physics")
     stores = {}
 
-    def build(llm, **overrides):
-        nodes = AgentNodes(retriever, llm, make_settings(**overrides), list_sections=retriever.store.list_sections)
+    def build(llm, images=None, **overrides):
+        nodes = AgentNodes(
+            retriever, llm, make_settings(**overrides), list_sections=retriever.store.list_sections, images=images
+        )
         stores["memory"] = InMemoryStore()
         return build_graph(nodes, checkpointer=InMemorySaver(), store=stores["memory"])
 
@@ -283,3 +285,51 @@ async def test_no_answer_hides_unrelated_nearest_topics(make_graph):
     _, state, _ = await run(make_graph(llm, max_rewrites=1, nearest_min_relevance=0.5), "Какой рецепт у борща?")
     assert state["answer"] == NO_ANSWER
     assert state["citations"] == []
+
+
+class FakeImages:
+    def __init__(self, fail: bool = False):
+        self.prompts: list[str] = []
+        self.fail = fail
+
+    async def generate(self, prompt):
+        from app.llm.images import GeneratedImage
+
+        self.prompts.append(prompt)
+        if self.fail:
+            raise LLMDown("генератор недоступен")
+        return GeneratedImage(data=b"\xff\xd8fake-jpeg", caption="готово", latency_s=0.1)
+
+
+async def test_draw_illustrates_topic_found_in_lectures(make_graph, tmp_path):
+    images = FakeImages()
+    llm = ScriptedLLM()
+    path, state, _ = await run(make_graph(llm, images=images, data_dir=tmp_path), "Нарисуй схему теорема Гаусса")
+
+    assert path == ["route", "illustrate"]
+    assert llm.calls == []  # маршрут по правилам, картинку рисует отдельный генератор
+    [img] = state["images"]
+    assert (tmp_path / "images" / f"{img['image_id']}.jpg").read_bytes() == b"\xff\xd8fake-jpeg"
+    assert "Поток вектора напряженности" in images.prompts[0]  # картинка строится по тексту лекции
+    assert "не рисунок из самой лекции" in state["answer"]
+    assert state["citations"][0]["page"] == 2
+
+
+async def test_draw_refuses_topic_outside_materials(make_graph, tmp_path):
+    images = FakeImages()
+    _, state, _ = await run(make_graph(ScriptedLLM(), images=images, data_dir=tmp_path), "Нарисуй кота на диване")
+
+    assert images.prompts == []
+    assert state["no_answer"] is True
+    assert "рисую я только иллюстрации к материалам" in state["answer"]
+
+
+async def test_draw_without_generator_or_with_failure_explains(make_graph, tmp_path):
+    _, state, _ = await run(make_graph(ScriptedLLM(), data_dir=tmp_path), "Нарисуй схему теорема Гаусса")
+    assert "не могу" in state["answer"]
+
+    _, state, _ = await run(
+        make_graph(ScriptedLLM(), images=FakeImages(fail=True), data_dir=tmp_path), "Нарисуй схему теорема Гаусса"
+    )
+    assert "Не получилось нарисовать" in state["answer"]
+    assert state.get("images") == []

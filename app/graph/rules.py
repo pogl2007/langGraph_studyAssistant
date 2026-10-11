@@ -13,6 +13,16 @@ _QUIZ = re.compile(
     re.IGNORECASE,
 )
 _QUIZ_TOPIC = re.compile(r"\b(?:по теме|на тему|по)\s+[«\"]?(.+?)[»\"]?\s*[.!?]*$", re.IGNORECASE)
+_DRAW = re.compile(
+    r"^(нарисуй|изобрази|сгенерируй (картинку|рисунок|изображение|схему)|покажи (картинкой|на рисунке)|"
+    r"сделай (рисунок|иллюстрацию|картинку))",
+    re.IGNORECASE,
+)
+_DRAW_PREFIX = re.compile(
+    r"^(нарисуй|изобрази|сгенерируй|покажи|сделай)\s+(мне\s+)?(картинку|рисунок|изображение|схему|иллюстрацию)?\s*"
+    r"(к теме|по теме|на тему|про|для)?\s*",
+    re.IGNORECASE,
+)
 _PROGRESS = re.compile(
     r"(что (мне )?(стоит |надо |нужно )?повторить|мои ошибки|слаб\w+ тем|в чём я ошиба|в чем я ошиба|мой прогресс)",
     re.IGNORECASE,
@@ -39,6 +49,8 @@ def classify(text: str) -> tuple[Route, str | None] | None:
     t = text.strip()
     if _PROGRESS.search(t):
         return "progress", None
+    if _DRAW.match(t):
+        return "draw", draw_topic(t)
     if _QUIZ.search(t):
         m = _QUIZ_TOPIC.search(t)
         return "quiz", (m.group(1).strip() if m else None)
@@ -47,6 +59,12 @@ def classify(text: str) -> tuple[Route, str | None] | None:
     if t.endswith("?") or _QUESTION_START.match(t):
         return "question", None
     return None
+
+
+def draw_topic(text: str) -> str:
+    """«Нарисуй схему силовых линий точечного заряда» → «силовых линий точечного заряда»."""
+    topic = _DRAW_PREFIX.sub("", text.strip()).strip(" .!?«»\"")
+    return topic or text.strip()
 
 
 def small_talk_reply(text: str) -> str | None:

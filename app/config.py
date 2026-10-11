@@ -111,6 +111,10 @@ class Settings(BaseSettings):
         return self.data_dir / "memory.sqlite"
 
     @property
+    def images_dir(self) -> Path:
+        return self.data_dir / "images"
+
+    @property
     def feedback_path(self) -> Path:
         return self.data_dir / "feedback.jsonl"
 

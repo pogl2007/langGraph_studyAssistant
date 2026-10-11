@@ -157,3 +157,43 @@ def test_missing_ca_bundle_fails_at_startup_not_on_first_request():
 
     with pytest.raises(ValueError, match="не найден"):
         resolve_ca_bundle("certs/nope.pem")
+
+
+class FakeImageSDK:
+    def __init__(self, content: str, image_b64: str = ""):
+        self.content = content
+        self.image_b64 = image_b64
+        self.payloads: list[dict] = []
+        self.fetched: list[str] = []
+
+    async def achat(self, payload):
+        self.payloads.append(payload)
+        return reply(self.content)
+
+    async def aget_image(self, file_id):
+        self.fetched.append(file_id)
+        return SimpleNamespace(content=self.image_b64)
+
+    async def aclose(self):
+        pass
+
+
+async def test_image_generator_parses_img_tag_and_downloads_file():
+    import base64
+
+    from app.llm.images import GigaChatImageGenerator
+
+    sdk = FakeImageSDK('<img src="abc-123" fuse="true"/>Схема готова', base64.b64encode(b"JPEG").decode())
+    image = await GigaChatImageGenerator(sdk, "GigaChat-3-Ultra").generate("нарисуй поле")
+    assert image.data == b"JPEG"
+    assert image.caption == "Схема готова"
+    assert sdk.fetched == ["abc-123"]
+    assert sdk.payloads[0]["function_call"] == "auto"  # без этого модель не вызывает рисование
+
+
+async def test_image_generator_text_answer_is_a_rejection():
+    from app.llm.client import RejectedError
+    from app.llm.images import GigaChatImageGenerator
+
+    with pytest.raises(RejectedError, match="не вызвала рисование"):
+        await GigaChatImageGenerator(FakeImageSDK("Я не могу рисовать"), "m").generate("нарисуй")

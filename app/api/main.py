@@ -42,6 +42,7 @@ from app.retrieval.store import ChunkStore
 log = logging.getLogger(__name__)
 
 _UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+_IMAGE_ID = re.compile(r"^[0-9a-f]{32}$")
 
 
 @dataclass
@@ -58,7 +59,7 @@ async def production_services() -> AsyncIterator[Services]:
     from langgraph.store.sqlite.aio import AsyncSqliteStore
 
     from app.llm.client import LLMClient
-    from app.services import build_agent, get_indexer, get_store, warm_up
+    from app.services import build_agent, build_images, get_indexer, get_store, warm_up
 
     s = get_settings()
     s.data_dir.mkdir(parents=True, exist_ok=True)
@@ -71,12 +72,15 @@ async def production_services() -> AsyncIterator[Services]:
     ):
         await checkpointer.setup()
         await memory_store.setup()
-        graph = build_agent(llm, checkpointer=checkpointer, store=memory_store, settings=s)
+        images = build_images(s)
+        graph = build_agent(llm, checkpointer=checkpointer, store=memory_store, settings=s, images=images)
         log.info("готов: модель %s, коллекция %s", llm.model, s.qdrant_collection)
         try:
             yield Services(graph=graph, indexer=get_indexer(), store=get_store(), settings=s)
         finally:
             await llm.aclose()
+            if images is not None:
+                await images.aclose()
 
 
 class ChatRequest(BaseModel):
@@ -166,6 +170,13 @@ def create_app(services_factory: Callable[[], AbstractAsyncContextManager[Servic
     async def list_documents(request: Request, course: str | None = None):
         return await asyncio.to_thread(svc(request).store.list_files, course)
 
+    @app.get("/images/{image_id}.jpg")
+    async def image(request: Request, image_id: str):
+        path = svc(request).settings.images_dir / f"{image_id}.jpg"
+        if not _IMAGE_ID.match(image_id) or not path.exists():  # id — только hex: путь не собрать из ввода
+            raise HTTPException(404, "Картинка не найдена")
+        return FileResponse(path, media_type="image/jpeg")
+
     @app.get("/documents/{file_id}/file")
     async def document_file(request: Request, file_id: str):
         s = svc(request)
@@ -237,6 +248,10 @@ async def _run_graph(s: Services, payload, thread_id: str, user_id: str, course:
                 "citations": [_with_url(c, s.settings) for c in values.get("citations", [])],
                 "no_answer": values.get("no_answer", False),
                 "route": values.get("route"),
+                "images": [
+                    {**img, "url": f"{s.settings.public_api_url}/images/{img['image_id']}.jpg"}
+                    for img in values.get("images", [])
+                ],
             })
     except Exception as e:
         log.exception("граф упал")

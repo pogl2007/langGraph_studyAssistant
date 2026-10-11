@@ -50,11 +50,12 @@ async def _ask(args: argparse.Namespace) -> None:
     from app.config import get_settings
     from app.graph.state import AgentContext
     from app.llm.client import LLMClient
-    from app.services import build_agent
+    from app.services import build_agent, build_images
 
     s = get_settings()
     llm = LLMClient.from_settings(s)
-    graph = build_agent(llm, checkpointer=InMemorySaver(), store=InMemoryStore())
+    images = build_images(s)
+    graph = build_agent(llm, checkpointer=InMemorySaver(), store=InMemoryStore(), images=images)
     config = {"configurable": {"thread_id": uuid.uuid4().hex}, "recursion_limit": s.recursion_limit}
     try:
         async for mode, chunk in graph.astream(
@@ -71,8 +72,12 @@ async def _ask(args: argparse.Namespace) -> None:
                 print(f"\n[{', '.join(chunk)}]", flush=True)
         values = (await graph.aget_state(config)).values
         print("\n\n=== Ответ ===\n" + values.get("answer", ""))
+        for img in values.get("images", []):
+            print(f"Картинка: {s.images_dir / (img['image_id'] + '.jpg')}")
     finally:
         await llm.aclose()
+        if images is not None:
+            await images.aclose()
 
 
 def cmd_graph(args: argparse.Namespace) -> None:

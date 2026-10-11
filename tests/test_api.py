@@ -15,7 +15,7 @@ from app.graph.nodes import AgentNodes
 from app.ingest.indexer import Indexer
 
 from .conftest import ScriptedLLM, make_pdf, make_settings
-from .test_graph import LECTURE, quiz_json
+from .test_graph import LECTURE, FakeImages, quiz_json
 
 
 @pytest.fixture
@@ -24,7 +24,7 @@ def api(embedder, store, sparse, retriever, tmp_path):
     llm = ScriptedLLM(answer="Поток равен заряду внутри поверхности [1].", quiz=quiz_json(2))
     indexer = Indexer(embedder, store, 40, 5, sparse=sparse, chunk_min_tokens=3, files_dir=settings.files_dir)
     graph = build_graph(
-        AgentNodes(retriever, llm, settings, list_sections=store.list_sections),
+        AgentNodes(retriever, llm, settings, list_sections=store.list_sections, images=FakeImages()),
         checkpointer=InMemorySaver(),
         store=InMemoryStore(),
     )
@@ -161,3 +161,22 @@ def test_feedback_is_appended(api):
 
 def test_health(api):
     assert api.get("/health").json()["status"] == "ok"
+
+
+def test_draw_returns_image_url_that_serves_jpeg(api):
+    wait_task(api, upload(api).json()["task_id"])
+    with api.stream("POST", "/chat", json={"message": "Нарисуй схему теорема Гаусса", "course": "physics"}) as r:
+        events = sse(r)
+    answer = next(d for n, d in events if n == "answer")
+    [img] = answer["images"]
+    assert img["url"] == f"http://api.test/images/{img['image_id']}.jpg"
+
+    got = api.get(f"/images/{img['image_id']}.jpg")
+    assert got.status_code == 200
+    assert got.headers["content-type"] == "image/jpeg"
+    assert got.content == b"\xff\xd8fake-jpeg"
+
+
+def test_image_endpoint_rejects_non_hex_ids(api):
+    assert api.get("/images/..%2F..%2Fsecrets.jpg").status_code == 404
+    assert api.get("/images/" + "0" * 32 + ".jpg").status_code == 404  # корректный id, но файла нет

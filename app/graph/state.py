@@ -11,7 +11,7 @@ from langchain_core.messages import AnyMessage
 from langgraph.graph.message import add_messages
 from pydantic import BaseModel, Field
 
-Route = Literal["question", "quiz", "chitchat", "out_of_scope", "progress"]
+Route = Literal["question", "quiz", "draw", "chitchat", "out_of_scope", "progress"]
 Grade = Literal["relevant", "irrelevant"]
 
 
@@ -33,6 +33,7 @@ class AgentState(TypedDict, total=False):
     no_answer: bool
     quiz: dict[str, Any] | None  # с правильными ответами — клиенту уходит без них
     quiz_answers: list[int] | None
+    images: list[dict[str, Any]]  # сгенерированные иллюстрации: {"image_id", "caption", "source"}
 
 
 @dataclass
@@ -44,12 +45,13 @@ class AgentContext:
 
 
 class RouteDecision(BaseModel):
-    route: Literal["question", "quiz", "chitchat", "out_of_scope"] = Field(
+    route: Literal["question", "quiz", "draw", "chitchat", "out_of_scope"] = Field(
         description="question — вопрос по учебному материалу; quiz — просьба составить тест; "
+        "draw — просьба нарисовать схему или иллюстрацию к теме курса; "
         "chitchat — приветствие, благодарность, разговор о самом ассистенте; "
         "out_of_scope — просьба, не связанная с учёбой (стихи, погода, код для работы)"
     )
-    topic: str | None = Field(default=None, description="тема теста, если route=quiz и тема названа")
+    topic: str | None = Field(default=None, description="тема теста или рисунка, если она названа")
 
 
 class GradeDecision(BaseModel):

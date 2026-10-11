@@ -15,6 +15,7 @@ import asyncio
 import logging
 import random
 import re
+import uuid
 from collections.abc import Callable
 from dataclasses import asdict
 from typing import Any
@@ -31,6 +32,7 @@ from app.config import Settings
 from app.graph import memory, prompts, rules
 from app.graph.state import AgentContext, AgentState, GradeDecision, Quiz, RouteDecision
 from app.llm.client import Completion, LLMClient, LLMError
+from app.llm.images import ImageGenerator
 from app.retrieval.search import Retriever
 from app.retrieval.store import ScoredChunk
 
@@ -49,11 +51,13 @@ class AgentNodes:
         llm: LLMClient,
         settings: Settings,
         list_sections: Callable[[str | None], list[dict[str, Any]]] | None = None,
+        images: ImageGenerator | None = None,
     ):
         self.retriever = retriever
         self.llm = llm
         self.s = settings
         self.list_sections = list_sections or (lambda course: [])
+        self.images = images
 
     # ---------- память ----------
 
@@ -98,6 +102,7 @@ class AgentNodes:
             "quiz_answers": None,
             "topic": None,
             "follow_up": False,
+            "images": [],
         }
 
         decided = rules.classify(question)
@@ -125,9 +130,13 @@ class AgentNodes:
         if route == "question":
             # «а что насчёт второго?» искать бесполезно — сначала раскрыть отсылку
             return "rewrite" if state.get("follow_up") else "retrieve"
-        return {"quiz": "make_quiz", "chitchat": "chitchat", "out_of_scope": "out_of_scope", "progress": "progress"}[
-            route
-        ]
+        return {
+            "quiz": "make_quiz",
+            "draw": "illustrate",
+            "chitchat": "chitchat",
+            "out_of_scope": "out_of_scope",
+            "progress": "progress",
+        }[route]
 
     # ---------- поиск и оценка ----------
 
@@ -266,6 +275,53 @@ class AgentNodes:
             "messages": [AIMessage(text)],
         }
 
+    # ---------- иллюстрация ----------
+
+    async def illustrate(self, state: AgentState, runtime: Runtime[AgentContext]) -> dict:
+        """Рисует учебную схему по теме курса — только если тема есть в лекциях.
+
+        Картинка строится по тексту найденного фрагмента, и подпись прямо говорит, что это иллюстрация
+        по описанию, а не рисунок из лекции: процитировать картинку как источник нельзя."""
+        if self.images is None:
+            text = "Рисовать я пока не могу: генерация картинок работает через GigaChat, а он не настроен."
+            return {"answer": text, "messages": [AIMessage(text)]}
+
+        topic = state.get("topic") or state["question"]
+        _status(runtime, "illustrate", f"Ищу в лекциях тему «{topic}»")
+        hits = await asyncio.to_thread(self.retriever.search, topic, 3, runtime.context.course)
+        if self.retriever.reranker is not None:
+            # рисуем только уверенно найденное: «нарисуй кота» не должно стать иллюстрацией к курсу физики
+            hits = [h for h in hits if h.relevance >= self.s.relevance_threshold]
+        if not hits:
+            text = f"В лекциях нет темы «{topic}», а рисую я только иллюстрации к материалам курса."
+            return {"answer": text, "no_answer": True, "messages": [AIMessage(text)]}
+
+        source = hits[0]
+        _status(runtime, "illustrate", "Рисую схему — это около 15 секунд")
+        prompt = (
+            f"Нарисуй учебную иллюстрацию: {topic}.\n"
+            f"Что должно быть изображено — по тексту лекции («{source.section or topic}»):\n{source.text[:700]}"
+        )
+        try:
+            image = await self.images.generate(prompt)
+        except LLMError as e:
+            log.warning("illustrate failed: %s", e)
+            text = "Не получилось нарисовать — генератор картинок сейчас недоступен. Попробуйте позже."
+            return {"answer": text, "messages": [AIMessage(text)]}
+
+        image_id = uuid.uuid4().hex
+        await asyncio.to_thread(_save_image, self.s.images_dir, image_id, image.data)
+        text = (
+            f"Иллюстрация к теме «{topic}». Нарисована по описанию из лекции — это не рисунок из самой лекции.\n"
+            f"Описание: {_label(source)}"
+        )
+        return {
+            "answer": text,
+            "images": [{"image_id": image_id, "topic": topic}],
+            "citations": [_citation(source)],
+            "messages": [AIMessage(text)],
+        }
+
     # ---------- болтовня, не по теме, прогресс ----------
 
     async def chitchat(self, state: AgentState, runtime: Runtime[AgentContext]) -> dict:
@@ -390,6 +446,11 @@ class AgentNodes:
 
 def _status(runtime: Runtime, node: str, text: str) -> None:
     runtime.stream_writer({"type": "status", "node": node, "text": text})
+
+
+def _save_image(directory, image_id: str, data: bytes) -> None:
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / f"{image_id}.jpg").write_bytes(data)
 
 
 def _docs(state: AgentState) -> list[ScoredChunk]:
