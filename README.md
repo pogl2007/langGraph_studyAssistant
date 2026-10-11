@@ -5,6 +5,7 @@
 - отвечает на вопросы **только по ним**, со ссылкой `[файл, стр. N]`, которая открывает PDF на этой странице;
 - честно говорит «в материалах этого нет» и подсказывает ближайшие темы, если ответа нет;
 - составляет тест из 5 вопросов по теме, проверяет ответы и запоминает темы, в которых студент ошибся;
+- рисует учебную схему к теме курса (GigaChat + Kandinsky) — только по тому, что есть в лекциях;
 - помнит контекст диалога («а закон Кулона?» после вопроса про Гаусса) и сжимает длинную историю;
 - доступен через веб-интерфейс, HTTP API со стримингом (SSE) и командную строку.
 
@@ -29,6 +30,7 @@ graph TD;
 	route -.-> retrieve;
 	route -.-> rewrite;
 	route -.-> make_quiz;
+	route -.-> illustrate;
 	route -.-> chitchat;
 	route -.-> out_of_scope;
 	route -.-> progress;
@@ -46,6 +48,7 @@ graph TD;
 	ask_quiz --> check_quiz;
 	check_quiz --> __end__;
 	no_answer --> __end__;
+	illustrate --> __end__;
 	chitchat --> __end__;
 	out_of_scope --> __end__;
 	progress --> __end__;
@@ -62,6 +65,7 @@ graph TD;
 | `generate` | ответ только по фрагментам, стрим токенов, цитаты `[файл, стр. N]` | да |
 | `no_answer` | «в материалах этого нет» + ближайшие темы | нет |
 | `make_quiz` → `ask_quiz` → `check_quiz` | тест: генерация по схеме, `interrupt` до ответов, проверка, запись слабых тем в Store | да, один раз |
+| `illustrate` | «Нарисуй …»: ищет тему в лекциях и рисует схему по тексту найденного фрагмента; темы нет — отказ | GigaChat text2image |
 | `chitchat`, `out_of_scope`, `progress` | шаблоны и слабые темы из Store | только для болтовни вне шаблонов |
 
 Память: история диалога — в checkpointer (SQLite, `thread_id`), слабые темы — в LangGraph Store
@@ -174,6 +178,7 @@ python -m app.cli graph                                              # схем�
 | GET | `/documents/tasks/{task_id}` | статус: queued / running / done / failed |
 | GET | `/documents?course=` | список файлов |
 | GET | `/documents/{file_id}/file` | сам PDF — цитаты ссылаются на `…/file#page=N` |
+| GET | `/images/{image_id}.jpg` | иллюстрация, нарисованная узлом `illustrate` |
 | DELETE | `/documents/{file_id}` | удалить файл и его чанки |
 | POST | `/chat` | ответ агента потоком SSE |
 | POST | `/chat/resume` | ответы на тест — продолжение графа после `interrupt` |
@@ -188,7 +193,7 @@ python -m app.cli graph                                              # схем�
 ## Тесты
 
 ```bash
-.venv/Scripts/python -m pytest      # 97 тестов, ~5 с, без сети и без моделей
+.venv/Scripts/python -m pytest      # 118 тестов, ~9 с, без сети и без моделей
 ```
 
 - граф с замоканной LLM и настоящим поиском по маленькому набору документов: вопрос → ответ с
