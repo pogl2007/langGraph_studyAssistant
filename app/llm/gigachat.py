@@ -4,7 +4,8 @@
 - авторизация OAuth: ключ авторизации (base64 от client_id:client_secret) обменивается на access
   token на 30 минут на отдельном хосте ngw.devices.sberbank.ru — SDK `gigachat` обновляет токен сам;
 - TLS-сертификаты подписаны корневым сертификатом Минцифры, которого нет в стандартных наборах
-  Python, — нужен `GIGACHAT_CA_BUNDLE` или явно выключенная проверка;
+  Python. Он лежит в репозитории (certs/russian_trusted_root_ca.pem, проверен по отпечатку двумя
+  каналами — см. DECISIONS.md) и подключается через GIGACHAT_CA_BUNDLE;
 - у SDK свои исключения — здесь они переводятся в общие типы, и политика ретраев и fallback
   в LLMClient работает для GigaChat так же, как для остальных.
 """
@@ -12,11 +13,12 @@
 import logging
 import time
 from collections.abc import AsyncIterator
+from pathlib import Path
 from typing import Any
 
 import httpx
 
-from app.config import Settings
+from app.config import ROOT, Settings
 from app.llm.client import Completion, EmptyCompletion, LLMError, RateLimited, RejectedError, TransientError
 
 log = logging.getLogger(__name__)
@@ -69,9 +71,10 @@ class GigaChatProvider:
             base_url=s.gigachat_base_url,
             auth_url=s.gigachat_auth_url,
             verify_ssl=s.gigachat_verify_ssl,
-            ca_bundle=s.gigachat_ca_bundle,
+            ca_bundle=resolve_ca_bundle(s.gigachat_ca_bundle) if s.gigachat_verify_ssl else "",
             timeout=s.llm_timeout,
         )
+
 
     def _payload(self, messages: list[dict], max_tokens: int, temperature: float) -> dict[str, Any]:
         return {"model": self.model, "messages": messages, "max_tokens": max_tokens, "temperature": temperature}
@@ -156,3 +159,14 @@ def _reraise(e: Exception) -> None:
 def _describe(e) -> str:
     content = (e.content or b"")[:200].decode("utf-8", "replace")
     return f"gigachat {e.status_code}: {content}"
+
+
+def resolve_ca_bundle(path: str) -> str:
+    """Относительный путь — от корня проекта: так он одинаков локально и в Docker (/srv)."""
+    if not path:
+        return ""
+    full = Path(path) if Path(path).is_absolute() else ROOT / path
+    if not full.is_file():
+        # Без этой проверки ошибка всплыла бы только на первом запросе и выглядела бы как сбой сети
+        raise ValueError(f"GIGACHAT_CA_BUNDLE: файл сертификата не найден: {full}")
+    return str(full)

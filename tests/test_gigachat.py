@@ -141,3 +141,19 @@ def test_chain_order_comes_from_settings():
 def test_gigachat_is_skipped_without_credentials():
     s = make_settings(llm_chain="gigachat,openai", gigachat_credentials="")
     assert [p.name for p in LLMClient.from_settings(s).providers] == ["primary"]
+
+
+def test_ca_bundle_path_is_resolved_from_project_root():
+    from app.config import ROOT
+    from app.llm.gigachat import resolve_ca_bundle
+
+    path = resolve_ca_bundle("certs/russian_trusted_root_ca.pem")
+    assert path == str(ROOT / "certs" / "russian_trusted_root_ca.pem")
+    assert resolve_ca_bundle("") == ""
+
+
+def test_missing_ca_bundle_fails_at_startup_not_on_first_request():
+    from app.llm.gigachat import resolve_ca_bundle
+
+    with pytest.raises(ValueError, match="не найден"):
+        resolve_ca_bundle("certs/nope.pem")

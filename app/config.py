@@ -75,9 +75,9 @@ class Settings(BaseSettings):
     gigachat_model: str = "GigaChat-3-Ultra"
     gigachat_base_url: str = ""  # пусто — адрес по умолчанию из SDK
     gigachat_auth_url: str = ""
-    # Сертификаты GigaChat подписаны корнем Минцифры: укажите путь к нему или выключите проверку
+    # Сертификаты GigaChat подписаны корнем Минцифры — он лежит в certs/ (путь от корня проекта)
     gigachat_verify_ssl: bool = True
-    gigachat_ca_bundle: str = ""
+    gigachat_ca_bundle: str = "certs/russian_trusted_root_ca.pem"
 
     # Порядок провайдеров: openai (LLM_* выше + LLM_FALLBACK_MODELS), gigachat, fallback.
     # Не настроенные звенья пропускаются.

@@ -19,6 +19,7 @@ RUN python -c "import tomllib; print('\n'.join(tomllib.load(open('pyproject.toml
     && pip install -r /tmp/requirements.txt
 
 COPY app ./app
+COPY certs ./certs
 
 RUN useradd --create-home --uid 1000 app \
     && mkdir -p /models /srv/data \
